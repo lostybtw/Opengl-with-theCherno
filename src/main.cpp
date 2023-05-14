@@ -102,6 +102,7 @@ int main(void)
 
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+	glfwSwapInterval(1);
     if (!window)
     {
         glfwTerminate();
@@ -143,15 +144,28 @@ int main(void)
 	ShaderProgramSource	src = ParseShader("res/basic.shader");
 	unsigned int Shader = CreateShader(src.VertexSource, src.FragmentSource);
 	ErrorGlCall(glUseProgram(Shader)); 
+	ErrorGlCall(int uloc = glGetUniformLocation(Shader, "u_color"));
+	ASSERT(uloc != -1);
 
+	float red = 0.5f;
+	float inc = 0.05f;
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
-        glClear(GL_COLOR_RENDERABLE);
-		
+        ErrorGlCall(glClear(GL_COLOR_BUFFER_BIT));
 			
+		ErrorGlCall(glUniform4f(uloc, red, 0.5f, 0.8f, 1.0f));
 		ErrorGlCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+
+		if(red > 1.0f){
+			inc = -0.01f;
+		} 
+		else if(red < 0.0f){
+			inc = 0.01f;
+		}
+
+		red += inc;
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
