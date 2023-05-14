@@ -123,7 +123,7 @@ int main(void)
 	unsigned int ibo;
 	glGenBuffers(1, &ibo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indicies, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 8 * sizeof(unsigned int), indicies, GL_STATIC_DRAW);
 	
 
 	ShaderProgramSource	src = ParseShader("res/basic.shader");
