@@ -9,19 +9,9 @@
 #include <string>
 #include <sstream>
 
-#define ASSERT(x) if(!(x)) __builtin_trap();
-#define ErrorGlCall(x) ClearGlErrors(); x; ASSERT(CheckGlErrors(#x, __FILE__, __LINE__));
-
-static void ClearGlErrors(){
-	while(glGetError() != GL_NO_ERROR);
-}
-static bool CheckGlErrors(const char* function, const char* file, int line){
-	while(GLenum error = glGetError()){
-		std::cout << "[GL Error] (" << error << ") : " << function << " : " << file << " : " << line << std::endl;
-		return false;
-	}
-	return true;
-}
+#include "Renderer.cpp"
+#include "VertexBuffer.cpp"
+#include "IndexBuffer.cpp"
 
 struct ShaderProgramSource{
 	std::string VertexSource;
@@ -116,7 +106,7 @@ int main(void)
 
 	if(glewInit() != GLEW_OK)
 		std::cout << "Error Initializing GLEW" << std::endl;
-	
+	{	
 	float positions[] = 
 	  { 
 		-0.5f, -0.5f, 
@@ -133,20 +123,14 @@ int main(void)
 	ErrorGlCall(glGenVertexArrays(1, &vao));
 	ErrorGlCall(glBindVertexArray(vao));
 
-	unsigned int buffer;
-	ErrorGlCall(glGenBuffers(1, &buffer));
-	ErrorGlCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-	ErrorGlCall(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float) ,positions, GL_STATIC_DRAW)); 
-
+	VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+	
 	ErrorGlCall(glEnableVertexAttribArray(0)); 
     ErrorGlCall(glVertexAttribPointer(0,2,GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
+	
+	IndexBuffer ib(indicies, 6);
 
-	unsigned int ibo;
-	ErrorGlCall(glGenBuffers(1, &ibo));
-	ErrorGlCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
-	ErrorGlCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 8 * sizeof(unsigned int), indicies, GL_STATIC_DRAW));	
-
-	ShaderProgramSource	src = ParseShader("res/basic.shader");
+	ShaderProgramSource	src = ParseShader("res/shaders/basic.shader");
 	unsigned int Shader = CreateShader(src.VertexSource, src.FragmentSource);
 	ErrorGlCall(glUseProgram(Shader)); 
 	ErrorGlCall(int uloc = glGetUniformLocation(Shader, "u_color"));
@@ -157,9 +141,8 @@ int main(void)
 	
 	ErrorGlCall(glBindVertexArray(0));
 	ErrorGlCall(glUseProgram(0));
-	ErrorGlCall(glBindBuffer(GL_ARRAY_BUFFER,0));
-	ErrorGlCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
-
+	vb.Unbind();
+	ib.Unbind();
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -170,7 +153,7 @@ int main(void)
 		ErrorGlCall(glUniform4f(uloc, red, 0.5f, 0.8f, 1.0f));
 		
 		ErrorGlCall(glBindVertexArray(vao));
-		ErrorGlCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+		ib.Bind();	
 		
 		ErrorGlCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
@@ -189,6 +172,7 @@ int main(void)
         glfwPollEvents();
     }
 	ErrorGlCall(glDeleteProgram(Shader));
+	}
     glfwTerminate();
     return 0;
 }
