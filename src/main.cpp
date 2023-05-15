@@ -97,8 +97,10 @@ int main(void)
     GLFWwindow* window;
 
     /* Initialize the library */
-    if (!glfwInit())
+    if (!glfwInit()){
         return -1;
+	}
+	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
@@ -127,11 +129,14 @@ int main(void)
 		2,3,0
 	};
 
+	unsigned int vao;
+	ErrorGlCall(glGenVertexArrays(1, &vao));
+	ErrorGlCall(glBindVertexArray(vao));
+
 	unsigned int buffer;
 	ErrorGlCall(glGenBuffers(1, &buffer));
 	ErrorGlCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-	ErrorGlCall(glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float) ,positions, GL_STATIC_DRAW)); 
-
+	ErrorGlCall(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float) ,positions, GL_STATIC_DRAW)); 
 
 	ErrorGlCall(glEnableVertexAttribArray(0)); 
     ErrorGlCall(glVertexAttribPointer(0,2,GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
@@ -149,13 +154,24 @@ int main(void)
 
 	float red = 0.5f;
 	float inc = 0.05f;
+	
+	ErrorGlCall(glBindVertexArray(0));
+	ErrorGlCall(glUseProgram(0));
+	ErrorGlCall(glBindBuffer(GL_ARRAY_BUFFER,0));
+	ErrorGlCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
         ErrorGlCall(glClear(GL_COLOR_BUFFER_BIT));
-			
+
+		ErrorGlCall(glUseProgram(Shader));
 		ErrorGlCall(glUniform4f(uloc, red, 0.5f, 0.8f, 1.0f));
+		
+		ErrorGlCall(glBindVertexArray(vao));
+		ErrorGlCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+		
 		ErrorGlCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
 		if(red > 1.0f){
