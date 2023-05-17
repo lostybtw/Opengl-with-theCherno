@@ -9,9 +9,9 @@ VertexBuffer::VertexBuffer(const void* data, unsigned int size){
 VertexBuffer::~VertexBuffer(){
 	ErrorGlCall(glDeleteBuffers(1, &m_RendererID));
 }
-void VertexBuffer::Bind() const{
+void VertexBuffer::Bind() const {
 	ErrorGlCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
 }
-void VertexBuffer::Unbind() const{
+void VertexBuffer::Unbind() const {
 	ErrorGlCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }

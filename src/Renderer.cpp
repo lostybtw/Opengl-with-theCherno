@@ -2,9 +2,6 @@
 
 #include "../include/Renderer.h"
 
-#define ASSERT(x) if(!(x)) __builtin_trap();
-#define ErrorGlCall(x) ClearGlErrors(); x; ASSERT(CheckGlErrors(#x, __FILE__, __LINE__));
-
 void ClearGlErrors(){
 	while(glGetError() != GL_NO_ERROR);
 }
