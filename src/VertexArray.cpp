@@ -1,4 +1,5 @@
 #include "../include/VertexArray.h"
+#include "../include/VertexBufferLayout.h"
 #include "../include/Renderer.h"
 
 #define BUFFER_OFFSET(idx) (static_cast<char*>(0) + (idx))

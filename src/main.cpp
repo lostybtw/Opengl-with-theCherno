@@ -2,17 +2,14 @@
 #include <GL/gl.h>
 #include <GL/glext.h>
 #include <GLFW/glfw3.h>
-#include <cstdio>
 #include <iostream>
-#include <fstream>
-#include <sched.h>
 #include <string>
-#include <sstream>
 
+#include "VertexBufferLayout.cpp"
 #include "Renderer.cpp"
 #include "VertexBuffer.cpp"
-#include "IndexBuffer.cpp"
 #include "VertexArray.cpp"
+#include "IndexBuffer.cpp"
 #include "Shader.cpp"
 
 int main(void)
@@ -71,18 +68,18 @@ int main(void)
 	vb.Unbind();
 	ib.Unbind();
 	shader.Unbind();
+	Renderer renderer;
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
-        ErrorGlCall(glClear(GL_COLOR_BUFFER_BIT));
+		renderer.Clear();
+
+		va.Bind();
+		ib.Bind();
 		shader.Bind();
 		shader.SetUniform4f("u_color", red, 0.5f, 0.8f, 1.0f);
-		va.Bind();
-		ib.Bind();	
-		
-		ErrorGlCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
-
+		renderer.Draw(va, ib, shader);
 		if(red > 1.0f){
 			inc = -0.01f;
 		} 
