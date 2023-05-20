@@ -29,6 +29,12 @@ void Shader::Unbind() const{
 void Shader::SetUniform4f(const std::string &name, float v0, float v1, float v2, float v3){
 	ErrorGlCall(glUniform4f(GetUniformLocation(name) ,v0, v1, v2, v3));		
 }
+void Shader::SetUniform1f(const std::string& name, float value){
+	ErrorGlCall(glUniform1f(GetUniformLocation(name), value));
+}
+void Shader::SetUniform1i(const std::string& name, int value){
+	ErrorGlCall(glUniform1i(GetUniformLocation(name), value));
+}
 
 
 unsigned int Shader::GetUniformLocation(const std::string& name){
@@ -36,7 +42,9 @@ unsigned int Shader::GetUniformLocation(const std::string& name){
 		return m_UniformLocationCache[name];
 	} 
 	ErrorGlCall(int location = glGetUniformLocation(m_RendererID, name.c_str()));
-	ASSERT(location != -1);
+	if(location == -1){
+		std::cout << "Warning: uniform " << name << " doesn't exist!" << std::endl;
+	}
 	m_UniformLocationCache[name] = location;
 	return location;
 }

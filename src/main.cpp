@@ -11,6 +11,8 @@
 #include "VertexArray.cpp"
 #include "IndexBuffer.cpp"
 #include "Shader.cpp"
+#include "Texture.cpp"
+#include "stb_image.cpp"
 
 int main(void)
 {
@@ -39,20 +41,23 @@ int main(void)
 	{	
 	float positions[] = 
 	  { 
-		-0.5f, -0.5f, 
-		0.5f, -0.5f, 
-		0.5f, 0.5f, 
-		-0.5f, 0.5f 
+		-0.5f, -0.5f,	0.0f, 0.0f,
+		0.5f, -0.5f,	1.0f,0.0f,
+		0.5f, 0.5f,		1.0f, 1.0f,
+		-0.5f, 0.5f ,	0.0f, 1.0f
 	  };
 	unsigned int indicies[] = {
 		0,1,2,
 		2,3,0
 	};
+	
+	ErrorGlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 	VertexArray va;
-	VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+	VertexBuffer vb(positions, 4 * 4 * sizeof(float));
 	
 	VertexBufferLayout layout;
+	layout.Push(GL_FLOAT, 2);
 	layout.Push(GL_FLOAT, 2);
 	va.AddBuffer(vb, layout);
 	
@@ -61,6 +66,10 @@ int main(void)
 	Shader shader("res/shaders/basic.shader");
 	shader.Bind();
 
+	Texture texture("res/textures/rect_texture.png");
+	texture.Bind();
+	shader.SetUniform1i("u_Texture", 0);
+	
 	float red = 0.5f;
 	float inc = 0.05f;
 	
@@ -78,6 +87,7 @@ int main(void)
 		va.Bind();
 		ib.Bind();
 		shader.Bind();
+		texture.Bind();
 		shader.SetUniform4f("u_color", red, 0.5f, 0.8f, 1.0f);
 		renderer.Draw(va, ib, shader);
 		if(red > 1.0f){
