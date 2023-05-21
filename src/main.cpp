@@ -51,7 +51,8 @@ int main(void)
 		2,3,0
 	};
 	
-	ErrorGlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+	//ErrorGlCall(glEnable(GL_BLEND));
+	//ErrorGlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 	VertexArray va;
 	VertexBuffer vb(positions, 4 * 4 * sizeof(float));
@@ -66,12 +67,12 @@ int main(void)
 	Shader shader("res/shaders/basic.shader");
 	shader.Bind();
 
-	Texture texture("res/textures/rect_texture.png");
+	Texture texture("res/textures/old_rect_texture.png");
 	texture.Bind();
 	shader.SetUniform1i("u_Texture", 0);
 	
-	float red = 0.5f;
-	float inc = 0.05f;
+	//float red = 0.5f;
+	//float inc = 0.05f;
 	
 	va.Unbind();
 	vb.Unbind();
@@ -88,16 +89,16 @@ int main(void)
 		ib.Bind();
 		shader.Bind();
 		texture.Bind();
-		shader.SetUniform4f("u_color", red, 0.5f, 0.8f, 1.0f);
+		shader.SetUniform4f("u_color", 0.8f, 0.5f, 0.8f, 1.0f);
 		renderer.Draw(va, ib, shader);
-		if(red > 1.0f){
+		/*if(red > 1.0f){
 			inc = -0.01f;
 		} 
 		else if(red < 0.0f){
 			inc = 0.01f;
 		}
 
-		red += inc;
+		red += inc;*/
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 

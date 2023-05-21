@@ -14,6 +14,6 @@ uniform sampler2D u_Texture;
 layout(location=0) out vec4 color;
 in vec2 v_texture_coordinate;
 void main(){
-	vec4 texColor = texture(u_Texture,	v_texture_coordinate); 
+	vec4 texColor = texture(u_Texture, v_texture_coordinate); 
 	color = texColor;
 };

@@ -26,7 +26,9 @@ Texture::~Texture(){
 void Texture::Bind(unsigned int slot /* =0 */) const{
 	ErrorGlCall(glActiveTexture(GL_TEXTURE0 + slot));
 	ErrorGlCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
+	ErrorGlCall(glEnable(GL_TEXTURE_2D));
 }
 void Texture::Unbind() const{
+	 ErrorGlCall(glDisable(GL_TEXTURE_2D));
 	 ErrorGlCall(glBindTexture(GL_TEXTURE_2D, 0));
 }
