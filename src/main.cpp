@@ -4,6 +4,8 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <string>
+#include "../include/vendor/glm/glm/glm.hpp"
+#include "../include/vendor/glm/glm/gtc/matrix_transform.hpp"
 
 #include "VertexBufferLayout.cpp"
 #include "Renderer.cpp"
@@ -64,8 +66,11 @@ int main(void)
 	
 	IndexBuffer ib(indicies, 6);
 
+	glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, 1.0f, -1.0f);
+
 	Shader shader("res/shaders/basic.shader");
 	shader.Bind();
+	shader.SetUniformMat4f("u_MVP", proj);
 
 	Texture texture("res/textures/old_rect_texture.png");
 	texture.Bind();
